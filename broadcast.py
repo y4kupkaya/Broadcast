@@ -127,9 +127,9 @@ async def handle_user_status(bot: Client, cmd: Message): # Kullanıcı kontrolü
             await db.add_user(chat_id)
             chat = bot.get_chat(chat_id)
             if str(chat_id).startswith("-100"):
-                new_chat_id = chat_id[4:]
+                new_chat_id = str(chat_id)[4:]
             else:
-                new_chat_id = chat_id[1:]
+                new_chat_id = str(chat_id)[1:]
             await bot.send_message(LOG_CHANNEL,LAN.GRUP_BILDIRIM.format(cmd.from_user.first_name, cmd.from_user.id, cmd.from_user.first_name, cmd.from_user.id, chat.title, cmd.chat.id, cmd.chat.id, cmd.message_id))
 
     ban_status = await db.get_ban_status(chat_id) # Yasaklı Kullanıcı Kontrolü
@@ -138,13 +138,13 @@ async def handle_user_status(bot: Client, cmd: Message): # Kullanıcı kontrolü
             await db.remove_ban(chat_id)
         else:
             if GROUP_SUPPORT:
-                GROUP_SUPPORT = f"@{GROUP_SUPPORT}"
+                msj = f"@{GROUP_SUPPORT}"
             else:
-                GROUP_SUPPORT = f"[{LAN.SAHIBIME}](tg://user?id={OWNER_ID})"
+                msj = f"[{LAN.SAHIBIME}](tg://user?id={OWNER_ID})"
             if cmd.chat.type == "private":
-                await cmd.reply_text(LAN.PRIVATE_BAN.format(GROUP_SUPPORT), quote=True)
+                await cmd.reply_text(LAN.PRIVATE_BAN.format(msj), quote=True)
             else:
-                await cmd.reply_text(LAN.GROUP_BAN.format(GROUP_SUPPORT),quote=True)
+                await cmd.reply_text(LAN.GROUP_BAN.format(msj),quote=True)
                 await bot.leave_chat(cmd.chat.id)
             return
     await cmd.continue_propagation()
